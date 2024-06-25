@@ -143,6 +143,8 @@ kind: Deployment
 metadata:
   name: litmusportal-frontend
   labels:
+    app: litmus
+    module: control-plane
     component: litmusportal-frontend
 spec:
   replicas: 1
@@ -201,6 +203,8 @@ kind: Deployment
 metadata:
   name: litmusportal-server
   labels:
+    app: litmus
+    module: control-plane
     component: litmusportal-server
 spec:
   replicas: 1
@@ -325,6 +329,8 @@ kind: Deployment
 metadata:
   name: litmusportal-auth-server
   labels:
+    app: litmus
+    module: control-plane
     component: litmusportal-auth-server
 spec:
   replicas: 1
