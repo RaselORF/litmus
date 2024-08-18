@@ -17,6 +17,7 @@ import (
 	"github.com/litmuschaos/litmus/chaoscenter/graphql/server/pkg/database/mongodb"
 	dbSchemaChaosHub "github.com/litmuschaos/litmus/chaoscenter/graphql/server/pkg/database/mongodb/chaos_hub"
 	"github.com/litmuschaos/litmus/chaoscenter/graphql/server/utils"
+	"github.com/mrz1836/go-sanitize"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -324,7 +325,7 @@ func (c *chaosHubService) UpdateChaosHub(ctx context.Context, chaosHub model.Upd
 	if err != nil {
 		return nil, err
 	}
-	clonePath := DefaultPath + prevChaosHub.ProjectID + "/" + prevChaosHub.Name
+	clonePath := DefaultPath + sanitize.PathName(prevChaosHub.ProjectID) + "/" + sanitize.PathName(prevChaosHub.Name)
 	if prevChaosHub.HubType == string(model.HubTypeRemote) {
 		if prevChaosHub.Name != chaosHub.Name || prevChaosHub.RepoURL != chaosHub.RepoURL {
 			remoteHub := model.CreateRemoteChaosHub{
@@ -724,9 +725,9 @@ func (c *chaosHubService) ListPredefinedExperiments(ctx context.Context, hubID s
 
 	var hubPath string
 	if hub.IsDefault {
-		hubPath = "/tmp/default/" + hub.Name + "/experiments/"
+		hubPath = "/tmp/default/" + sanitize.PathName(hub.Name) + "/experiments/"
 	} else {
-		hubPath = DefaultPath + projectID + "/" + hub.Name + "/experiments/"
+		hubPath = DefaultPath + sanitize.PathName(projectID) + "/" + sanitize.PathName(hub.Name) + "/experiments/"
 	}
 	var predefinedWorkflows []*model.PredefinedExperimentList
 	files, err := os.ReadDir(hubPath)
@@ -782,9 +783,9 @@ func (c *chaosHubService) GetPredefinedExperiment(ctx context.Context, hubID str
 	}
 	var hubPath string
 	if hub.IsDefault {
-		hubPath = "/tmp/default/" + hub.Name + "/experiments/"
+		hubPath = "/tmp/default/" + sanitize.PathName(hub.Name) + "/experiments/"
 	} else {
-		hubPath = DefaultPath + projectID + "/" + hub.Name + "/experiments/"
+		hubPath = DefaultPath + sanitize.PathName(projectID) + "/" + sanitize.PathName(hub.Name) + "/experiments/"
 	}
 	var predefinedWorkflows []*model.PredefinedExperimentList
 
@@ -802,7 +803,7 @@ func (c *chaosHubService) getPredefinedExperimentDetails(experimentsPath string,
 	var (
 		csvManifest        = ""
 		workflowManifest   = ""
-		path               = experimentsPath + experiment + "/" + experiment + ".chartserviceversion.yaml"
+		path               = experimentsPath + sanitize.PathName(experiment) + "/" + sanitize.PathName(experiment) + ".chartserviceversion.yaml"
 		isExist            = true
 		preDefinedWorkflow = &model.PredefinedExperimentList{}
 	)
