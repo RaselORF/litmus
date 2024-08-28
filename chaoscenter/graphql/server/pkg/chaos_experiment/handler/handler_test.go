@@ -6,6 +6,8 @@ import (
 	"reflect"
 	"testing"
 
+	dbSchemaProbe "github.com/litmuschaos/litmus/chaoscenter/graphql/server/pkg/database/mongodb/probe"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/litmuschaos/litmus/chaoscenter/graphql/server/graph/model"
@@ -46,8 +48,9 @@ func NewMockServices() *MockServices {
 		chaosExperimentOperator    = dbChaosExperiment.NewChaosExperimentOperator(mongodbMockOperator)
 		chaosExperimentRunOperator = dbChaosExperimentRun.NewChaosExperimentRunOperator(mongodbMockOperator)
 		chaosExperimentService     = new(chaosExperimentMocks.ChaosExperimentService)
+		probeOperator              = dbSchemaProbe.NewChaosProbeOperator(mongodbMockOperator)
 	)
-	var chaosExperimentHandler = NewChaosExperimentHandler(chaosExperimentService, chaosExperimentRunService, infrastructureService, gitOpsService, chaosExperimentOperator, chaosExperimentRunOperator, mongodbMockOperator)
+	var chaosExperimentHandler = NewChaosExperimentHandler(chaosExperimentService, chaosExperimentRunService, infrastructureService, gitOpsService, chaosExperimentOperator, chaosExperimentRunOperator, probeOperator, mongodbMockOperator)
 	return &MockServices{
 		ChaosExperimentService:     chaosExperimentService,
 		ChaosExperimentRunService:  chaosExperimentRunService,
